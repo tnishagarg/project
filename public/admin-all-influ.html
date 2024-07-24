@@ -1,0 +1,77 @@
+<html>
+
+<head>
+    <title>DOcument</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <script>
+        var module = angular.module("Mymodule", []);
+        var controller = module.controller("Mycontroller", function ($scope, $http) {
+            $scope.showinflu = function () {
+                let url = "/show-all-influ";
+                $http.get(url).then(done, fail);
+
+                function done(response) {
+                    $scope.jsonarray = response.data;
+
+                }
+                function fail(err) {
+                    alert(err)
+                }
+            }
+        })
+    </script>
+</head>
+
+<body ng-app="Mymodule" ng-controller="Mycontroller" ng-init="showinflu();">
+    <br>
+   <br>
+    <div class="container">
+        <table class="table" border="1">
+            <tr>
+                <th>Sr.No</th>
+                <th>Email ID</th>
+                <th>Name</th>
+
+                <th>City</th>
+                <th>Contact</th>
+                <th>Fields</th>
+                <th>Pic</th>
+            </tr>
+            <tr ng-repeat="obj in jsonarray">
+                <td>
+                    {{$index+1}}
+                </td>
+                <td>
+                    {{obj.emailid}}
+                </td>
+                <td>
+                    {{obj.name}}
+                </td>
+
+                <td>
+                    {{obj.city}}
+                </td>
+                <td>
+                    {{obj.contact}}
+                </td>
+                <td>
+                    {{obj.fields}}
+                </td>
+                <td>
+                    {{obj.picpath}}
+                    <br>
+                    <img src="uploads/{{obj.picpath}}" width="50" height="50">
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,100 @@
+<html>
+
+<head>
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style/style.css">
+    <script>
+        function dologout()
+        {
+          localStorage.removeItem("activeuser");
+          location.href="index.html";
+        }
+        </script>
+    <script>
+        var module = angular.module("Mymodule", []);
+        var controller = module.controller("Mycontroller", function ($scope, $http) {
+            $scope.jsonarray;
+            $scope.getevents = function () {
+                let emailid=localStorage.getItem("activeuser");
+                //alert(emailid);
+                let url = "/get-events?emailid="+emailid;
+                $http.get(url).then(function (resp) {
+            
+                    $scope.jsonarray = resp.data;
+                }, function (err) {
+                    alert(err);
+                });
+            }
+            $scope.dodelete = function (rid) {
+                let url = "/delevent?rid=" + rid;
+                $http.get(url).then(done, fail);
+                function done(resp) {
+                    //alert(resp.data);
+                    $scope.getevents();
+                }
+                function fail(err) {
+                    alert(err);
+                }
+            }
+        });
+    </script>
+</head>
+
+<body ng-app="Mymodule" ng-controller="Mycontroller" ng-init="getevents()" style="background-color: #fff;">
+    <nav class="navbar fixed-top" >
+
+
+        <ul class="nav">
+          <img src="nodeproject pics/logo.png" alt="" width="70" height="70">
+      <h5 style="margin-top: 40px;">Connectra</h5>
+        </ul>
+        <ul class="nav justify-content-center">
+          <h3>Event Manager</h3>
+        </ul>
+        <ul class="nav justify-content-end">
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="dologout();"><h5>Logout</h5></a>
+          </li>
+        </ul>
+    
+      </nav><br><br>
+    <div class="container" style="margin-top: 100px;">
+        
+        <table class="table" border="1">
+            <tr>
+                <th>Sr. No</th>
+                <th>Event</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>City</th>
+                <th>Venue</th>
+                <th></th>
+            </tr>
+            <tr ng-repeat="obj in jsonarray">
+                <td>{{$index+1}}</td>
+                <td>{{obj.eventss}}</td>
+                <td>{{obj.doe}}</td>
+                <td>{{obj.tos}}</td>
+                <td>{{obj.city}}</td>
+                <td>{{obj.venue}}</td>
+                <td><input type="button" value="Delete" ng-click="dodelete(obj.rid);"></td>
+            </tr>
+        </table>
+    </div>
+    </div>
+    <div class="card-footer fixed-bottom" style="background-color: #4c4b4b; color: #f0f0f0;">
+        <center>
+            Contact Us: <br> Nava Nalanda Library,Thapar university <br> &copy;connectra
+        </center>
+      </div>
+</body>
+
+</html>

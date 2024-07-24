@@ -1,0 +1,305 @@
+<html>
+
+<head>
+  <title>
+    Document
+  </title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style/style.css">
+  <script>
+
+    function dologout() {
+      localStorage.removeItem("activeuser");
+      location.href = "index.html";
+    }
+
+    function doPrev(fileCtrl, imgPrev) {
+      let [file] = fileCtrl.files
+      if (file) {
+        imgPrev.src = URL.createObjectURL(file)
+      }
+    }
+
+  </script>
+
+
+  <script>
+    $(document).ready(function () {
+
+      let active = localStorage.getItem("activeuser");
+      $("#email").val(active).prop("readonly", true);
+     let obj = {
+        type: "get",
+        url: "/check-infl-acc",
+        data: {
+          email: active,
+        }
+      }
+      $.ajax(obj).done(function (jsonary) {
+        if (jsonary.length == 0) {
+          $("#btnsave").prop("hidden", false);
+          $("#btnupdate").prop("hidden", true);
+        }
+        else {
+          $("#btnsave").prop("hidden", true);
+          $("#btnupdate").prop("hidden", false);
+        }
+      })
+      $("#btnsearch").click(function () {
+        let obj = {
+          type: "get",
+          url: "/find-details",
+          data: {
+            email: $("#email").val()
+          }
+        }
+        $.ajax(obj).done(function (jsonAry) {
+          if (jsonAry.length == 0) {
+            alert("Invalid ID");
+            return;
+          }
+          // alert(JSON.stringify(jsonAry));
+          $("#txtname").val(jsonAry[0].name);
+          $("#gender").val(jsonAry[0].gender);
+          $("#address").val(jsonAry[0].address);
+          $("#dob").val(jsonAry[0].dob);
+          $("#city").val(jsonAry[0].city);
+          $("#state").val(jsonAry[0].state);
+          $("#contact").val(jsonAry[0].contact);
+          $("#fields").val(jsonAry[0].fields.split(","));
+          $("#insta").val(jsonAry[0].insta);
+          $("#fb").val(jsonAry[0].fb);
+          $("#youtube").val(jsonAry[0].youtube);
+          $("#other").val(jsonAry[0].others);
+          $("#prev").prop("src", "uploads/" + jsonAry[0].picpath);
+          $("#hdn").val(jsonAry[0].picpath);
+
+        }).fail(function (err) {
+          alert(err.statusText);
+        })
+      })
+    })
+  </script>
+</head>
+
+<body>
+  <nav class="navbar fixed-top">
+
+
+    <ul class="nav">
+      <img src="nodeproject pics/logo.png" alt="" width="70" height="70">
+      <h5 style="margin-top: 40px;">Connectra</h5>
+    </ul>
+    <ul class="nav justify-content-center">
+      <h3>Profile form</h3>
+    </ul>
+    <ul class="nav justify-content-end">
+      <li class="nav-item">
+        <a class="nav-link" href="#" onclick="dologout();">
+          <h5>Logout</h5>
+        </a>
+      </li>
+    </ul>
+
+  </nav><br><br>
+  <br>
+  <div class="container">
+    <div class="row g-0" style="margin-top: 80px;">
+
+    </div>
+    <form method="post" enctype="multipart/form-data">
+      <input type="hidden" name="hdn" id="hdn">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <label for="email" class="form-label" style="color: darkblue">Email id:</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="col-md-2 offset-md-1">
+
+          <br>
+          <button type="button" class="btn btn-primary" id="btnsearch" name="btnsearch">Search</button>
+        </div>
+        <div class="col-md-1 offset-md-3">
+          <img src="" id="prev" alt="" width="100" height="100" name="prev">
+        </div>
+
+
+
+      </div>
+      <br>
+
+      <div class="row g-0">
+        <div class="col-md-3">
+          <label for="txtname" class="form-label" style="color: darkblue">Name:</label>
+          <input type="text" class="form-control" id="txtname" name="txtname" required>
+        </div>
+
+        <div class="col-md-2 offset-md-1">
+          <label for="gender" class="form-label" style="color: darkblue">Gender:</label>
+          <select id="gender" name="gender" class="form-select" required>
+            <option value=""></option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="col-md-2 offset-md-1">
+          <label for="dob" class="form-label" style="color: darkblue">Date of birth:</label>
+          <br>
+          <input type="date" name="dob" id="dob" required>
+        </div>
+        <div class="col-md-2 offset-md-1">
+          <label for="pic" class="form-label" style="color: darkblue">Profile pic:</label>
+          <input class="form-control" type="file" id="pic" name="pic" onchange="doPrev(this,prev)">
+        </div>
+
+
+      </div>
+      <br>
+      <div class="row g-0">
+        <div class="col-md-5">
+          <label for="address" class="form-label" style="color: darkblue">Address:</label>
+          <input type="text" class="form-control" id="address" name="address" required>
+        </div>
+
+
+        <div class="col-md-2 offset-md-1">
+          <label for="state" class="form-label" style="color: darkblue">City:</label>
+          <select id="city" name="city" class="form-select" required>
+            <option value=""></option>
+            <option value="Ahmedabad">Ahmedabad</option>
+            <option value="Ambala">Ambala</option>
+            <option value="Amritsar">Amritsar</option>
+            <option value="Banglore">Banglore</option>
+            <option value="Bathinda">Bathinda</option>
+            <option value="Bareilly">Bareilly</option>
+            <option value="Bhopal">Bhopal</option>
+            <option value="Bhubaneswar">Bhubaneswar</option>
+            <option value="Chandigarh">Chandigarh</option>
+            <option value="Chennai">Chennai</option>
+            <option value="Coimbatore">Coimbatore</option>
+            <option value="Dehradun">Dehradun</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Fatehpur">Fatehpur</option>
+            <option value="Gandhinagar">Gandhinagar</option>
+            <option value="Gurgaon">Gurgaon</option>
+            <option value="Guwahati">Guwahati</option>
+            <option value="Gwalior">Gwalior</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Indore">Indore</option>
+            <option value="Jaipur">Jaipur</option>
+            <option value="Jalandhar">Jalandhar</option>
+            <option value="Jammu">Jammu</option>
+            <option value="Jamnanagar">Jamnanagar</option>
+            <option value="Jodhpur">Jodhpur</option>
+            <option value="Kanpur">Kanpur</option>
+            <option value="Kochi">Kochi</option>
+            <option value="Kolkata">Kolkata</option>
+            <option value="Kota">Kota</option>
+            <option value="Lucknow">Lucknow</option>
+            <option value="Ludhiana">Ludhiana</option>
+            <option value="Meerut">Meerut</option>
+            <option value="Mohali">Mohali</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Mysore">Mysore</option>
+            <option value="Nagpur">Nagpur</option>
+            <option value="Noida">Noida</option>
+            <option value="Panchkula">Panchkula</option>
+            <option value="Patiala">Patiala</option>
+            <option value="Patna">Patna</option>
+            <option value="Puducherry">Puducherry</option>
+            <option value="Pune">Pune</option>
+            <option value="Raikot">Raikot</option>
+            <option value="Rajkot">Rajkot</option>
+            <option value="Ranchi">Ranchi</option>
+            <option value="Shimla">Shimla</option>
+            <option value="Siliguri">Siliguri</option>
+            <option value="Surat">Surat</option>
+            <option value="Udaipur">Udaipur</option>
+            <option value="Vadodara">Vadodara</option>
+            <option value="Varanasi">Varanasi</option>
+            <option value="Vishakhapatnam">Vishakhapatnam</option>
+            <option value="Yamunanagar">Yamunanagar</option>
+          </select>
+        </div>
+        <div class="col-md-2 offset-md-1">
+          <label for="contact" class="form-label" style="color: darkblue">Contact No:</label>
+          <input type="text" class="form-control" id="contact" name="contact" required>
+        </div>
+
+      </div>
+      <br>
+      <div class="row g-0">
+        <div class="col-md-2">
+          <label for="fields" class="form-label" style="color: darkblue">Fields: (you can choose multiple)</label>
+          <select id="fields" class="form-select" size="3" name="fields" multiple required>
+
+            <option value="beauty and fashion">Beauty and Fashion</option>
+            <option value="Health and Wellness">Health and Wellness</option>
+            <option value="Travel">Travel</option>
+            <option value="Food and Cooking">Food and Cooking</option>
+            <option value="Gaming">Gaming</option>
+            <option value="Technology">Technology</option>
+            <option value="Lifestyle">Lifestyle</option>
+            <option value="Finance">Finance</option>
+            <option value="Sports">Sports</option>
+            <option value="Education">Education</option>
+            <option value="Business and Entrepreneurship">Business and Entrepreneurship</option>
+            <option value="Arts and Culture">Arts and Culture</option>
+            <option value="Home and Garden">Home and Garden</option>
+            <option value="Wealth Management">Wealth Management</option>
+            <option value="Envirnonmental Sustainability">Envirnonmental Sustainability</option>
+          </select>
+        </div>
+        <div class="col-md-2 offset-md-1">
+          <label for="insta" class="form-label" style="color: darkblue">Link of Instagram id:</label>
+          <input type="text" class="form-control" id="insta" name="insta" required>
+        </div>
+
+        <div class="col-md-2 offset-md-1">
+          <label for="fb" class="form-label" style="color: darkblue">Link of Facebook id:</label>
+          <input type="text" class="form-control" id="fb" name="fb" required>
+        </div>
+
+        <div class="col-md-2 offset-md-1">
+          <label for="youtube" class="form-label" style="color: darkblue">Youtube channel Link:</label>
+          <input type="text" class="form-control" id="youtube" name="youtube" required>
+        </div>
+
+      </div>
+      <br>
+      <div class="row g-0">
+        <div class="mb-3">
+          <label for="other" class="form-label" style="color: darkblue">Other Info:</label>
+          <textarea class="form-control" id="other" name="other" rows="3"></textarea>
+        </div>
+      </div>
+    
+      <div class="row g-0">
+        <div class="mb-3">
+          <button type="submit" class="btn btn-primary" formaction="/infl-save-process" onclick="profile();"
+            id="btnsave" name="btnsave">Save</button>
+        </div>
+      </div>
+      <div class="row g-0">
+        <div class="mb-3">
+          <button type="submit" class="btn btn-primary" id="btnupdate" name="btnupdate"
+            formaction="/infl-update-process">Update</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer " style="background-color: #4c4b4b; color: #f0f0f0;">
+    <center>
+        Contact Us: <br> Nava Nalanda Library,Thapar university <br> &copy;connectra
+    </center>
+  </div>
+</body>
+
+</html>

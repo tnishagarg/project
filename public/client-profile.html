@@ -1,0 +1,208 @@
+<html>
+
+<head>
+  <title>Document</title>
+</head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="style/style.css">
+  <script>
+    function dologout()
+    {
+      localStorage.removeItem("activeuser");
+      location.href="index.html";
+    }
+  </script>
+  <script>
+    $(document).ready(function () {
+      let active = localStorage.getItem("activeuser");
+      $("#email").val(active).prop("readonly", true);
+      let obj={
+        type: "get",
+        url: "/check-client-acc",
+        data: {
+          email: active,
+        }
+      }
+      $.ajax(obj).done(function(jsonary){
+        if(jsonary.length==0)
+      {
+        $("#btnsave").prop("hidden",false);
+        $("#btnupdate").prop("hidden",true);
+      }
+      else{
+        $("#btnsave").prop("hidden",true);
+        $("#btnupdate").prop("hidden",false);
+      }
+      })
+      $("#btnsearch").click(function () {
+        let obj = {
+          type: "get",
+          url: "/find-cdetails",
+          data: {
+            email: $("#email").val()
+          }
+        }
+        $.ajax(obj).done(function (jsonAry) {
+          if (jsonAry.length == 0) {
+            alert("Invalid ID");
+            return;
+          }
+          // alert(JSON.stringify(jsonAry));
+          $("#txtname").val(jsonAry[0].name);
+          $("#txtcity").val(jsonAry[0].city);
+          $("#txtstate").val(jsonAry[0].state);
+          $("#org").val(jsonAry[0].org);
+          $("#contact").val(jsonAry[0].mobile);
+        }).fail(function (err) {
+          alert(err.statusText);
+        })
+      })
+    })
+  </script>
+<body >
+  <nav class="navbar fixed-top " >
+
+
+    <ul class="nav">
+      <img src="nodeproject pics/logo.png" alt="" width="70" height="70">
+  <h5 style="margin-top: 40px;">Connectra</h5>
+    </ul>
+    <ul class="nav justify-content-center">
+      <h3>Profile form</h3>
+    </ul>
+    <ul class="nav justify-content-end">
+      <li class="nav-item">
+        <a class="nav-link" href="#" onclick="dologout();"><h5>Logout</h5></a>
+      </li>
+    </ul>
+
+  </nav><br><br>
+  <div class="container">
+    <div class="row g-0" style="margin-top: 80px;">
+
+    </div>
+    <form method="post" enctype="multipart/form-data">
+      <input type="hidden" name="hdn" id="hdn">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <label for="email" class="form-label" style="color: darkblue">Email id:</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="col-md-2 offset-md-1">
+
+          <br>
+          <button type="button" class="btn btn-primary" id="btnsearch" name="btnsearch">Search</button>
+        </div>
+
+
+
+
+      </div>
+      <br><br>
+
+      <div class="row g-0">
+        <div class="col-md-3">
+          <label for="txtname" class="form-label" style="color: darkblue">Name:</label>
+          <input type="text" class="form-control" id="txtname" name="txtname" required>
+        </div>
+        <div class="col-md-3 offset-md-1">
+          <label for="txtname" class="form-label" style="color: darkblue">City:</label>
+          <input type="text" class="form-control" id="txtcity" name="txtcity" required>
+        </div>
+
+        <div class="col-md-3 offset-md-1">
+          <label for="state" class="form-label" style="color: darkblue">State:</label>
+          <select id="txtstate" name="txtstate" class="form-select" required>
+            <option value=""></option>
+            <option value="Andhra Pradesh">Andhra Pradesh</option>
+            <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+            <option value="Assam">Assam</option>
+            <option value="Bihar">Bihar</option>
+            <option value="Chandigarh">Chandigarh</option>
+            <option value="Chhattisgarh">Chhattisgarh</option>
+            <option value="Dadar and Nagar Haveli">Dadar and Nagar Haveli</option>
+            <option value="Daman and Diu">Daman and Diu</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Lakshadweep">Lakshadweep</option>
+            <option value="Puducherry">Puducherry</option>
+            <option value="Goa">Goa</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Haryana">Haryana</option>
+            <option value="Himachal Pradesh">Himachal Pradesh</option>
+            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+            <option value="Jharkhand">Jharkhand</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Kerala">Kerala</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="Manipur">Manipur</option>
+            <option value="Meghalaya">Meghalaya</option>
+            <option value="Mizoram">Mizoram</option>
+            <option value="Nagaland">Nagaland</option>
+            <option value="Odisha">Odisha</option>
+            <option value="Punjab">Punjab</option>
+            <option value="Rajasthan">Rajasthan</option>
+            <option value="Sikkim">Sikkim</option>
+            <option value="Tamil Nadu">Tamil Nadu</option>
+            <option value="Telangana">Telangana</option>
+            <option value="Tripura">Tripura</option>
+            <option value="Uttar Pradesh">Uttar Pradesh</option>
+            <option value="Uttarakhand">Uttarakhand</option>
+            <option value="West Bengal">West Bengal</option>
+          </select>
+        </div>
+
+
+
+      </div>
+      <br><br>
+      <div class="row g-0">
+        <div class="col-md-4 ">
+          <label for="gender" class="form-label" style="color: darkblue">Individual/Organization:</label>
+          <select id="org" name="org" class="form-select" required>
+            <option value=""></option>
+            <option value="Individual">Individual</option>
+            <option value="Organization">Organization</option>
+
+          </select>
+        </div>
+
+
+
+
+        <div class="col-md-4 offset-md-2">
+          <label for="contact" class="form-label" style="color: darkblue">Contact No:</label>
+          <input type="text" class="form-control" id="contact" name="contact" required>
+        </div>
+
+      </div>
+
+
+      <br><br>
+      <div class="row g-0">
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-primary" formaction="/client-save-process" id="btnsave" name="btnsave">Send to server</button>
+        </div>
+        <div class="row g-0">
+        <div class="col-md-1">
+          <button type="submit" class="btn btn-primary" id="btnupdate" name="btnupdate"
+            formaction="/client-update-process">Modify</button>
+        </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer fixed-bottom" style="background-color: #4c4b4b; color: #f0f0f0;">
+    <center>
+        Contact Us: <br> Nava Nalanda Library,Thapar university <br> &copy;connectra
+    </center>
+  </div>
+</body>
+
+</html>
